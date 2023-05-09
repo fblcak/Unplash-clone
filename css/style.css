@@ -114,10 +114,3 @@ input:focus{
     }
 }
 
-#preloader{
-    background: #000;
-    height: 100vh;
-    width: 100vh;
-    position: fixed;
-    z-index: 100;
-}
