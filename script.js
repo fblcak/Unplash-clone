@@ -2,6 +2,15 @@ const input = document.getElementById('input');
 const grid = document.getElementsByClassName('grid')[0];
 
 window.addEventListener('load', dayNightMode)
+window.addEventListener('load', () => {
+    const loader = document.querySelector(".loader");
+
+    loader.classList.add("loader-hidden");
+
+    loader.addEventListener("transitioned", () =>{
+        document.body.removeChild("loader")
+    })
+})
 
 
 input.addEventListener('keydown', function(event){
@@ -59,4 +68,6 @@ function dayNightMode(){
     } 
    
 }
+
+
 
