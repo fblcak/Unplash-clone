@@ -30,10 +30,12 @@ function loadImg(){
             imageNodes[i] = document.createElement('div');
             imageNodes[i].className = 'img';
             imageNodes[i].style.backgroundImage = 'url('+data.results[i].urls.raw+')';
-            imageNodes[i].addEventListener('dblclick',function(){
+            imageNodes[i].addEventListener('dblclick',
+            function(){
                 windows.open(data.results[i].links.download,
                 '_blank');
-        })
+            })
+            grid.appendChild(imageNodes[]);
         }
     })
 }
