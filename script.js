@@ -35,7 +35,7 @@ function loadImg(){
                 windows.open(data.results[i].links.download,
                 '_blank');
             })
-            grid.appendChild(imageNodes[]);
+            grid.appendChild(imageNodes[i]);
         }
     })
 }
