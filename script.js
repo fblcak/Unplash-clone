@@ -12,7 +12,7 @@ input.addEventListener('keydown', function(event){
 function loadImg(){
     removeImage();
 
-    const url = 'https://api.unsplash.com/photos/?client_id=SouHY7Uul_OxoMl-OxoMl3LL3c0NkxUtjIrKwf3tsGkJaiVo';
+    const url = 'https://api.unsplash.com/search/photos/?query='+input.value+'&per_page=9&client_id=FFPUStWiWo3Q8vWZJUz55Q8TE5CG2D3lgJAo4LJLj6E';
     
 
     fetch(url)
@@ -50,7 +50,7 @@ function dayNightMode(){
     
     if(hour >= 7 && hour <= 19){
        document.body.style.backgroundColor =
-       'whitesmoke';
+       'whitesmoke'; 
        document.body.style.color = 'black'; 
     }
     else{
