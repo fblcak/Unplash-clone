@@ -1,73 +1,29 @@
-const input = document.getElementById('input');
-const grid = document.getElementsByClassName('grid')[0];
+const access_key = 'FFPUStWiWo3Q8vWZJUz55Q8TE5CG2D3lgJAo4LJLj6E';
 
-window.addEventListener('load', dayNightMode)
-window.addEventListener('load', () => {
-    const loader = document.querySelector(".loader");
+const random_photo_url = 'https://api.unsplash.com/photos/random?client_id=${access_key}&count=30'
 
-    loader.classList.add("loader-hidden");
+const gallery = document.querySelector('.gallery');
 
-    loader.addEventListener("transitioned", () =>{
-        document.body.removeChild("loader")
-    })
-})
+let allImages; // this will store all the images
 
+const getImages = () => {
+    fetch(random_photo_url)
+    .then(res => res.json())
+    .then(data => {
+        allImages = data;
+        makeImages(allImages);
+    });
+}
 
-input.addEventListener('keydown', function(event){
-  if(event.key === 'Enter')
-     loadImg();
-})
-
-function loadImg(){
-    removeImage();
-
-    const url = 'https://api.unsplash.com/search/photos/?query='+input.value+'&per_page=50&client_id=FFPUStWiWo3Q8vWZJUz55Q8TE5CG2D3lgJAo4LJLj6E';
-    
-
-    fetch(url)
-
-    .then(response =>{
-        if (response.ok)
-            return response.json();
-        else
-           alert(response.status)           
-    })
-    
-    .then(data =>{
-        const imageNodes = [];
-        for(let i = 0; i < data.results.length;i++){
-            imageNodes[i] = document.createElement('div');
-            imageNodes[i].className = 'img';
-            imageNodes[i].style.backgroundImage = 'url('+data.results[i].urls.raw+')';
-            imageNodes[i].addEventListener('dblclick',
-            function(){
-                windows.open(data.results[i].links.download,
-                '_blank');
-            })
-            grid.appendChild(imageNodes[i]);
-        }
+const makeImages = (data) => {
+    data.forEach((item, index) => {
+        
+        let img = document.createElement('img');
+        img.src = item.urls.regular;
+        img.className = 'gallery-img';
+        
+        gallery.appendChild(img);
     })
 }
 
-function removeImage(){
-    grid.innerHTML = '';
-}
-
-function dayNightMode(){
-    const date = new Date();
-    const hour = date.getHours ();
-    
-    if(hour >= 7 && hour <= 19){
-       document.body.style.backgroundColor =
-       'whitesmoke'; 
-       document.body.style.color = 'black'; 
-    }
-    else{
-        document.body.style.backgroundColor = 'black';
-        document.body.style.color = 'white';
-    } 
-   
-}
-
-
-
+getImages();
