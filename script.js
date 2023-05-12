@@ -1,29 +1,94 @@
-const access_key = 'FFPUStWiWo3Q8vWZJUz55Q8TE5CG2D3lgJAo4LJLj6E';
+const grid = document.querySelector('.grid')
+const input = document.getElementById('input')
+const submitBtn = document.getElementById('submit')
 
-const random_photo_url = 'https://api.unsplash.com/photos/random?client_id=${access_key}&count=30'
+const macyInstance = Macy({
+	container: grid,
+	breakAt: {
+		1600: 5,
+		1200: 4,
+		900: 3,
+		600: 2,
+		400: 1,
+	},
+	margin: {
+		x: 15,
+		y: 15,
+	},
+})
 
-const gallery = document.querySelector('.gallery');
+const key = 'FFPUStWiWo3Q8vWZJUz55Q8TE5CG2D3lgJAo4LJLj6E'
 
-let allImages; // this will store all the images
+const API_URL = 'https://api.unsplash.com'
 
-const getImages = () => {
-    fetch(random_photo_url)
-    .then(res => res.json())
-    .then(data => {
-        allImages = data;
-        makeImages(allImages);
-    });
+const fixStartUpBug = () => {
+	macyInstance.runOnImageLoad(function () {
+		macyInstance.recalculate(true, true)
+		var evt = document.createEvent('UIEvents')
+		evt.initUIEvent('resize', true, false, window, 0)
+		window.dispatchEvent(evt)
+	}, true)
 }
 
-const makeImages = (data) => {
-    data.forEach((item, index) => {
-        
-        let img = document.createElement('img');
-        img.src = item.urls.regular;
-        img.className = 'gallery-img';
-        
-        gallery.appendChild(img);
-    })
+const addImagesInDom = images => {
+	images.forEach(image => {
+		const container = document.createElement('div')
+
+		const img = document.createElement('img')
+
+		img.src = image
+		container.append(img)
+
+		grid.append(container)
+	})
 }
 
-getImages();
+const intializeImages = async () => {
+	let { data: images } = await axios.get(
+		`${API_URL}/photos/?client_id=${key}&per_page=50`
+	)
+
+	images = images.map(image => image.urls.regular)
+
+	addImagesInDom(images)
+
+	fixStartUpBug()
+}
+
+intializeImages()
+
+const searchImages = async query => {
+	let {
+		data: { results: images },
+	} = await axios.get(
+		`${API_URL}/search/photos/?client_id=${key}&query=${query}&per_page=50`
+	)
+
+	images = images.map(image => image.urls.regular)
+
+	return images
+}
+
+const removeAllChild = parent => {
+	while (parent.firstChild) {
+		parent.removeChild(parent.firstChild)
+	}
+}
+
+const handleSubmit = async event => {
+	event.preventDefault()
+
+	const query = input.value
+
+	if (!query) return false
+
+	const images = await searchImages(query)
+
+	removeAllChild(grid)
+
+	addImagesInDom(images)
+
+	fixStartUpBug()
+}
+
+submitBtn.addEventListener('click', handleSubmit)
