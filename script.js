@@ -30,18 +30,44 @@ const fixStartUpBug = () => {
 	}, true)
 }
 
+
+const fixStartUpBug = () => {
+	macyInstance.runOnImageLoad(function () {
+		macyInstance.recalculate(true, true)
+		var evt = document.createEvent('UIEvents')
+		evt.initUIEvent('resize', true, false, window, 0)
+		window.dispatchEvent(evt)
+	}, true)
+}
+
 const addImagesInDom = images => {
 	images.forEach(image => {
-		const container = document.createElement('div')
+		const container = document.createElement('div');
 
-		const img = document.createElement('img')
+		const img = document.createElement('img');
+		img.src = image;
 
-		img.src = image
-		container.append(img)
+		const downloadBtn = document.createElement('button');
+		downloadBtn.textContent = 'Download';
 
-		grid.append(container)
-	})
-}
+		downloadBtn.addEventListener('click', () => {
+			fetch(image)
+			  .then(response => response.blob())
+			  .then(blob => {
+				const url = URL.createObjectURL(blob);
+				const a = document.createElement('a');
+				a.href = url;
+				a.download = 'image.jpg';
+				a.click();
+				URL.revokeObjectURL(url);
+			  });
+		  });
+
+		container.append(img, downloadBtn);
+		grid.append(container);
+
+	});
+};
 
 const intializeImages = async () => {
 	let { data: images } = await axios.get(
